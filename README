@@ -1,0 +1,10 @@
+This is a very simple and yet buggy project.
+it used nodejs and starts tail -f on p2pool's log.
+
+all relevant lines are converted to json and long polled to the website delievered. the index.html is delievered through nodejs also.
+
+TODO:
+ - configurable pathes
+ - error handling
+ - copy of forrestv nice p2pool image generator with pure html
+
