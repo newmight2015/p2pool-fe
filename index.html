@@ -1,0 +1,92 @@
+<html>
+	<head>
+		<script type="text/javascript" src="http://www.k1024.de/jquery.js"></script>
+		<script>
+			function callNode() {
+			    $.ajax({
+				cache : false,
+				url : '/api',
+				data : {},
+				success : function(response, code, xhr) {
+			 
+					if ('OK' == response) {
+						callNode();
+						return false;
+					}
+
+					$("#out").html(response);
+					var rr = eval("(" + String(response) + ")");
+					
+					for(var i in rr) {
+						var r = rr[i];
+						if(r.type == "WORKER") {
+							// Worker suchen
+							var item = $("#worker" + r.workerName);
+							if(item.length == 0) {
+								$("#out").html("ADD");
+								$('#workers tr:last').after('<tr><td id="worker' + r.workerName + '">' + r.workerName + '</th><td>' + r.payoutIfBlock + ' BTC</th></tr>');
+							}
+							
+							$("#difficulty").html(r.difficulty);
+							$("#blockValue").html(r.blockValue);
+							$("#transactionCount").html(r.transactionCount);
+						}
+						
+						if(r.type == "POOL") {
+							$("#mhash").html(r.mhash);
+							$("#shares").html(r.shares);
+							$("#recent").html(r.recent);
+							$("#mymhash").html(r.mymhash);
+							$("#myshares").html(r.myshares);
+							$("#orphan").html(r.orphan);
+							$("#dead").html(r.dead);
+							$("#peers").html(r.peers);
+						}
+						
+						if(r.type == "AVG") {
+							$("#avg").html(r.avg);
+						}
+						
+						if(r.type == "STALES") {
+							$("#poolStales").html(r.poolStales);
+							$("#myStales").html(r.myStales);
+							$("#myStalesVar").html(r.myStalesVar);
+						}
+					}
+
+					// make new call
+					callNode();
+				}
+			    });
+			};
+			callNode();		
+		</script>
+	</head>
+	<body>
+		P2Pool Stales: <div id="poolStales"></div>
+		My Stales: <div id="myStales"></div>
+		+-: <div id="myStalesVar"></div>
+		Average time between blocks (days): <div id="avg"></div>
+		P2Pool MHash: <div id="mhash"></div>
+		P2Pool Shares: <div id="shares"></div>
+		Recent %: <div id="recent"></div>
+		MyMHash: <div id="mymhash"></div>
+		MyShares: <div id="myshares"></div>
+		Orphan: <div id="orphan"></div>
+		Dead: <div id="dead"></div>
+		Peers: <div id="peers"></div>
+		P2Pool Difficulty: <div id="difficulty"></div>
+		Current Block Value: <div id="blockValue"></div>
+		Transactions in Block: <div id="transactionCount"></div>
+		<table id="workers">
+			<tr>
+				<th>Worker</th>
+				<th>Payout</th>
+			</tr>
+		</table>
+
+		<div id="out">OUT</div>
+
+		
+	</body>
+</html>
