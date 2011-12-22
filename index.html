@@ -14,19 +14,14 @@
 						return false;
 					}
 
-					$("#out").html(response);
 					var rr = eval("(" + String(response) + ")");
 					
 					for(var i in rr) {
 						var r = rr[i];
 						if(r.type == "WORKER") {
 							// Worker suchen
-							var item = $("#worker" + r.workerName);
-							if(item.length == 0) {
-								$("#out").html("ADD");
-								$('#workers tr:last').after('<tr><td id="worker' + r.workerName + '">' + r.workerName + '</th><td>' + r.payoutIfBlock + ' BTC</th></tr>');
-							}
-							
+							$("#worker" + r.workerName).remove();
+							$('#workers tr:last').after('<tr id="worker' + r.workerName + '"><td>' + r.workerName + ':</td><td>' + r.payoutIfBlock + ' BTC</td></tr>');
 							$("#difficulty").html(r.difficulty);
 							$("#blockValue").html(r.blockValue);
 							$("#transactionCount").html(r.transactionCount);
@@ -55,38 +50,90 @@
 					}
 
 					// make new call
+					updateShareFlow();
 					callNode();
 				}
 			    });
 			};
-			callNode();		
+			callNode();
+			
+			var allowShareFlowUpdate = false;
+			function updateShareFlow() {
+				if(allowShareFlowUpdate) {
+					allowShareFlowUpdate = false;
+					$("#shareFlowImage").attr("src", "/chain_img?" + Math.random());
+				}
+			}
 		</script>
+		<style>
+		
+			* {
+				font-family:monospace;
+			}
+			
+			body,html {
+				margin:0;
+				padding:0;
+				background-color:black;
+				color:white;
+				font-size:1.1em;
+			}
+			
+			#head {
+				display:block;
+				background-color:darkblue;
+				padding:4px;
+				font-size:1.4em;
+			}
+			
+			#content {
+				margin-left:420px;
+			}
+			
+			#shareflow {
+				float:left;
+			}
+			
+			.p2pinfo {
+				display:inline;
+				font-weight:bold;
+			}
+			
+		</style>
 	</head>
 	<body>
-		P2Pool Stales: <div id="poolStales"></div>
-		My Stales: <div id="myStales"></div>
-		+-: <div id="myStalesVar"></div>
-		Average time between blocks (days): <div id="avg"></div>
-		P2Pool MHash: <div id="mhash"></div>
-		P2Pool Shares: <div id="shares"></div>
-		Recent %: <div id="recent"></div>
-		MyMHash: <div id="mymhash"></div>
-		MyShares: <div id="myshares"></div>
-		Orphan: <div id="orphan"></div>
-		Dead: <div id="dead"></div>
-		Peers: <div id="peers"></div>
-		P2Pool Difficulty: <div id="difficulty"></div>
-		Current Block Value: <div id="blockValue"></div>
-		Transactions in Block: <div id="transactionCount"></div>
-		<table id="workers">
-			<tr>
-				<th>Worker</th>
-				<th>Payout</th>
-			</tr>
-		</table>
+		<div id="shareflow">
+			<img id="shareFlowImage" src="/chain_img" width="400" height="100%" onLoad="allowShareFlowUpdate=true;">
+		</div>
+		
+		<div id="content">
+			<h1>
+				<b>P2P</b>ool @<div id="mhash" class="p2pinfo"></div>MHash
+			</h1>
 
-		<div id="out">OUT</div>
-
+			<h2>Pool Stats</h2>
+			P2Pool stales: <div id="poolStales" class="p2pinfo"></div>%<br>
+			average days between blocks: <div id="avg" class="p2pinfo"></div><br>
+			P2Pool shares: <div id="shares" class="p2pinfo"></div><br>
+			peers: <div id="peers" class="p2pinfo"></div><br>
+			P2Pool difficulty: <div id="difficulty" class="p2pinfo"></div>
+			
+			<h2>Block Info</h2>
+			block value: <div id="blockValue" class="p2pinfo"></div><br>
+			block transactions: <div id="transactionCount" class="p2pinfo"></div>
+			
+			<h2>My Stats</h2>
+			stales: <div id="myStales" class="p2pinfo"></div>% +- <div id="myStalesVar" class="p2pinfo"></div>%<br>
+			recent shares %: <div id="recent" class="p2pinfo"></div><br>
+			mhash: <div id="mymhash" class="p2pinfo"></div><br>
+			submitted shares: <div id="myshares" class="p2pinfo"></div><br>
+			orphans: <div id="orphan" class="p2pinfo"></div><br>
+			deads: <div id="dead" class="p2pinfo"></div><br><br>
+			
+			<table id="workers">
+				<tr><td colspan="2"><h2>Workers</h2></td></tr>
+			</table>
+		</div>
 		
 	</body>
 </html>
